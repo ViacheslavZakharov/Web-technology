@@ -34,6 +34,7 @@ namespace WebApplication1.Controllers
         // GET: Users
         public async Task<IActionResult> Index()
         {
+            ViewData["Title"]= "Управление пользователями";
             return View(await _context.Users.ToListAsync());
         }
 

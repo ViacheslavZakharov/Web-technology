@@ -3,14 +3,14 @@
 @inject UserManager<ApplicationUser> UserManager
 
 @{
-    ViewData["Title"] = "Управление пользователями";
+    //ViewData["Title"] = "Управление пользователями";
     Layout = "_Layout";
 }
 
-<h2>Управление пользователями</h2>
-<h3>@ViewData["Title"]</h3>
+<h1>@ViewData["Title"]</h1>
 @*<div class="btn-block">@Html.ActionLink("Зарегистрировать","Register","Users")</div>*@
-<div class="btn-block"><a href="/Identity/Account/Register">Зарегистрировать</a></div>
+@*<div class="btn-block"><a href="/Identity/Account/Register">Зарегистрировать</a></div>*@
+<div class="btn-block">@Html.ActionLink("Зарегистрировать", "Edit", "Users")</div>
 <table class="table">
     @*<thead>*@
     <tr>

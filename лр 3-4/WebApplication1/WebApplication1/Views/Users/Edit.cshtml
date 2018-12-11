@@ -1,10 +1,10 @@
 ﻿@model ApplicationUser
 
-@*@{
-    ViewData["Title"] = "Управление пользователями";
-}*@
+@{
+    Layout = "_Layout";
+}
 
-<h2>@ViewData["Title"]</h2>
+<h1>@ViewData["Title"]</h1>
 
 <form asp-action="edit" asp-controller="users">
     <div class="form-group">

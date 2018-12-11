@@ -91,8 +91,8 @@ namespace WebApplication1.Controllers
                 {
                     user.UserName = user.Email;
                     await _userManager.CreateAsync(user);
-                    var password = await _userManager.GeneratePasswordResetTokenAsync(user);
-                    var urlEncode = HttpUtility.UrlEncode(password);
+                    var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    var urlEncode = HttpUtility.UrlEncode(code);
                     var callbackUrl = $"{Request.Scheme}://{Request.Host.Value}/Identity/Account/ResetPassword?userId={user.Id}&code={urlEncode}";
                     var subject = $"Сброс пароля {Request.Host.Value}";
                     var htmlMessage = $"<b>Для сброса пароля перейдите по ссылке <a href='{callbackUrl}'>Сброс пароля</a></b>";

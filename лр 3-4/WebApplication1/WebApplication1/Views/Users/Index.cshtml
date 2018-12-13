@@ -3,32 +3,29 @@
 @inject UserManager<ApplicationUser> UserManager
 
 @{
-    //ViewData["Title"] = "Управление пользователями";
     Layout = "_Layout";
 }
 
 <h1>@ViewData["Title"]</h1>
-@*<div class="btn-block">@Html.ActionLink("Зарегистрировать","Register","Users")</div>*@
-@*<div class="btn-block"><a href="/Identity/Account/Register">Зарегистрировать</a></div>*@
 <div class="btn-block">@Html.ActionLink("Зарегистрировать", "Edit", "Users")</div>
 <table class="table">
-    @*<thead>*@
+    <thead>
     <tr>
         <td>Действие</td>
         <td>Email</td>
         <td>ФИО</td>
     </tr>
-    @*</thead>
-        <tbody>*@
+    </thead>
+        <tbody>
     @foreach (var user in Model)
     {
-        //var action = await UserManager.IsInRoleAsync(user, "Admin") ? "Забрать права администратора" : "Сделать администратором";
+        var action = await UserManager.IsInRoleAsync(user, "Admin") ? "Забрать права администратора" : "Сделать администратором";
         <tr>
-            <td>@Html.ActionLink("Редакт.", "Edit", "Users", new { id = user.Id }) @Html.ActionLink("Уд.", "Remove", "Users", new { id = user.Id }) @*@Html.ActionLink(action,"ToggleAdmin","Users",new { id = user.Id })*@ </td>
+            <td>@Html.ActionLink("Редакт.", "Edit", "Users", new { id = user.Id }) @Html.ActionLink("Уд.", "Remove", "Users", new { id = user.Id }) @Html.ActionLink(action,"ToggleAdmin","Users",new { id = user.Id }) </td>
             <td>@user.Email</td>
             <td>@user.ToString()</td>
         </tr>
     }
-    @*</tbody>*@
+    </tbody>
 </table>
 

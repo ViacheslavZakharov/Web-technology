@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -13,22 +14,18 @@ using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
 {
-    //[Authorize(RoleStoreBase="Admin")]
+    [Authorize(Roles="Admin")]
     public class UsersController : Controller
     {
         public readonly ApplicationDbContext _context;
         public readonly IEmailSender _emailSender;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
 
 
-        public UsersController(ApplicationDbContext context,UserManager<ApplicationUser> userManager,
-                               IEmailSender emailSender, RoleManager<IdentityRole> roleManager)
+
+        public UsersController(ApplicationDbContext context, IEmailSender emailSender)
         {
             _context = context;
-            _userManager = userManager;
             _emailSender = emailSender;
-            _roleManager = roleManager;
         }
 
         // GET: Users
@@ -85,13 +82,13 @@ namespace WebApplication1.Controllers
                     editUser.Surname = user.Surname;
                     editUser.Patronomic = user.Patronomic;
                     editUser.UserName = user.Email;
-                    await _userManager.UpdateAsync(editUser);
+                    await userManager.UpdateAsync(editUser);
                 }
                 else
                 {
                     user.UserName = user.Email;
-                    await _userManager.CreateAsync(user);
-                    var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    await userManager.CreateAsync(user);
+                    var code = await userManager.GeneratePasswordResetTokenAsync(user);
                     var urlEncode = HttpUtility.UrlEncode(code);
                     var callbackUrl = $"{Request.Scheme}://{Request.Host.Value}/Identity/Account/ResetPassword?userId={user.Id}&code={urlEncode}";
                     var subject = $"Сброс пароля {Request.Host.Value}";
@@ -117,7 +114,7 @@ namespace WebApplication1.Controllers
                     var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
                     if (user != null)
                     {
-                        await _userManager.DeleteAsync(user);
+                        await userManager.DeleteAsync(user);
                         return RedirectToAction("Index");
                     }
                 }
@@ -132,24 +129,19 @@ namespace WebApplication1.Controllers
 
         [HttpGet]
         public async Task<IActionResult> ToggleAdmin(string id, 
-            [FromServices] UserManager<ApplicationUser> userManager)
+                                                    [FromServices] UserManager<ApplicationUser> userManager,
+                                                    [FromServices] RoleManager<IdentityRole> roleManager)
         {
-            var role = await _roleManager.FindByNameAsync("Admin");
+            var role = await roleManager.FindByNameAsync("Admin");
             if (role == null)
-            {
-                await _roleManager.CreateAsync(new IdentityRole("Admin"));
-            }
+                await roleManager.CreateAsync(new IdentityRole("Admin"));
 
-            var user = await _userManager.FindByIdAsync(id);
-            var isAdmin = await _userManager.IsInRoleAsync(user, "Admin");
-            if (isAdmin)
-            {
-                await _userManager.RemoveFromRoleAsync(user, "Admin");
-            }
+            var user = await userManager.FindByIdAsync(id);
+            var isAdmin = await userManager.IsInRoleAsync(user, "Admin");
+            if (!isAdmin)
+                await userManager.AddToRoleAsync(user, "Admin");
             else
-            {
-                await _userManager.AddToRoleAsync(user, "Admin");
-            }
+                await userManager.RemoveFromRoleAsync(user, "Admin");
             return RedirectToAction("Index");
         }
 

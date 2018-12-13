@@ -35,3 +35,7 @@ body {
         display: none;
     }
 }
+
+.table thead{
+    background-color:lightblue;
+}

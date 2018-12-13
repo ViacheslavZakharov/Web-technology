@@ -13,7 +13,7 @@ namespace WebApplication1.Models
         public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
             //throw new NotImplementedException();
-            var emailMessage = new MailMessage(new MailAddress("v_zaharov97@mail.ru", "v_zaharov97@mail.ru"), new MailAddress(email))
+            var emailMessage = new MailMessage(new MailAddress("myTest1mail@mail.ru", "myTest1mail@mail.ru"), new MailAddress(email))
             {
                 Subject =subject,
                 Body=htmlMessage,
@@ -21,7 +21,7 @@ namespace WebApplication1.Models
             };
             var smtpClient = new SmtpClient("smtp.mail.ru")
             {
-                Credentials = new NetworkCredential("v_zaharov97@mail.ru", "djudoist_victoria"),
+                Credentials = new NetworkCredential("myTest1mail@mail.ru", "Parol_1"),
                 EnableSsl = true
             };
             try
@@ -30,7 +30,7 @@ namespace WebApplication1.Models
             }
             catch(Exception ex)
             {
-                Console.WriteLine("Exception caught in CreateTestMessage4(): {0}", ex.ToString());
+                Console.WriteLine("Exception caught in SendEmailAsync(): {0}", ex.ToString());
             }
         }
     }
